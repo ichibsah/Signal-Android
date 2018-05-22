@@ -33,7 +33,9 @@ import org.thoughtcrime.securesms.jobs.RefreshPreKeysJob;
 import org.thoughtcrime.securesms.jobs.RequestGroupInfoJob;
 import org.thoughtcrime.securesms.jobs.RetrieveProfileAvatarJob;
 import org.thoughtcrime.securesms.jobs.RetrieveProfileJob;
+import org.thoughtcrime.securesms.jobs.RotateCertificateJob;
 import org.thoughtcrime.securesms.jobs.RotateSignedPreKeyJob;
+import org.thoughtcrime.securesms.jobs.SendDeliveryReceiptJob;
 import org.thoughtcrime.securesms.jobs.SendReadReceiptJob;
 import org.thoughtcrime.securesms.preferences.AppProtectionPreferenceFragment;
 import org.thoughtcrime.securesms.push.SecurityEventListener;
@@ -83,7 +85,9 @@ import dagger.Provides;
                                      SendReadReceiptJob.class,
                                      MultiDeviceReadReceiptUpdateJob.class,
                                      AppProtectionPreferenceFragment.class,
-                                     GcmBroadcastReceiver.class})
+                                     GcmBroadcastReceiver.class,
+                                     RotateCertificateJob.class,
+                                     SendDeliveryReceiptJob.class})
 public class SignalCommunicationModule {
 
   private static final String TAG = SignalCommunicationModule.class.getSimpleName();
@@ -118,10 +122,13 @@ public class SignalCommunicationModule {
                                                           new DynamicCredentialsProvider(context),
                                                           new SignalProtocolStoreImpl(context),
                                                           BuildConfig.USER_AGENT,
+                                                          TextSecurePreferences.isMultiDevice(context),
                                                           Optional.fromNullable(MessageRetrievalService.getPipe()),
+                                                          Optional.fromNullable(MessageRetrievalService.getUnidentifiedPipe()),
                                                           Optional.of(new SecurityEventListener(context)));
     } else {
-      this.messageSender.setMessagePipe(MessageRetrievalService.getPipe());
+      this.messageSender.setMessagePipe(MessageRetrievalService.getPipe(), MessageRetrievalService.getUnidentifiedPipe());
+      this.messageSender.setIsMultiDevice(TextSecurePreferences.isMultiDevice(context));
     }
 
     return this.messageSender;

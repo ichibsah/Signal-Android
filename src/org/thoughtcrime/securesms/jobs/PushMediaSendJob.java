@@ -8,6 +8,7 @@ import org.thoughtcrime.securesms.logging.Log;
 
 import org.thoughtcrime.securesms.ApplicationContext;
 import org.thoughtcrime.securesms.attachments.Attachment;
+import org.thoughtcrime.securesms.crypto.UnidentifiedAccessUtil;
 import org.thoughtcrime.securesms.database.Address;
 import org.thoughtcrime.securesms.database.DatabaseFactory;
 import org.thoughtcrime.securesms.database.MmsDatabase;
@@ -144,7 +145,7 @@ public class PushMediaSendJob extends PushSendJob implements InjectableType {
                                                                                            .asExpirationUpdate(message.isExpirationUpdate())
                                                                                            .build();
 
-      messageSender.sendMessage(address, mediaMessage);
+      messageSender.sendMessage(address, UnidentifiedAccessUtil.getAccessFor(context, message.getRecipient()), mediaMessage);
     } catch (UnregisteredUserException e) {
       Log.w(TAG, e);
       throw new InsecureFallbackApprovalException(e);

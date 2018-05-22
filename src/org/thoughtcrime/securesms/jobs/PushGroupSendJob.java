@@ -8,6 +8,7 @@ import com.annimon.stream.Stream;
 
 import org.thoughtcrime.securesms.ApplicationContext;
 import org.thoughtcrime.securesms.attachments.Attachment;
+import org.thoughtcrime.securesms.crypto.UnidentifiedAccessUtil;
 import org.thoughtcrime.securesms.database.Address;
 import org.thoughtcrime.securesms.database.DatabaseFactory;
 import org.thoughtcrime.securesms.database.GroupReceiptDatabase.GroupReceiptInfo;
@@ -28,6 +29,7 @@ import org.thoughtcrime.securesms.transport.UndeliverableMessageException;
 import org.thoughtcrime.securesms.util.GroupUtil;
 import org.whispersystems.libsignal.util.guava.Optional;
 import org.whispersystems.signalservice.api.SignalServiceMessageSender;
+import org.whispersystems.signalservice.api.crypto.UnidentifiedAccessPair;
 import org.whispersystems.signalservice.api.crypto.UntrustedIdentityException;
 import org.whispersystems.signalservice.api.messages.SignalServiceAttachment;
 import org.whispersystems.signalservice.api.messages.SignalServiceDataMessage;
@@ -181,6 +183,12 @@ public class PushGroupSendJob extends PushSendJob implements InjectableType {
     if (filterAddress != null) addresses = getPushAddresses(filterAddress);
     else                       addresses = getPushAddresses(recipients);
 
+    List<Optional<UnidentifiedAccessPair>> unidentifiedAccess = Stream.of(addresses)
+                                                                      .map(address -> Address.fromSerialized(address.getNumber()))
+                                                                      .map(address -> Recipient.from(context, address, false))
+                                                                      .map(recipient -> UnidentifiedAccessUtil.getAccessFor(context, recipient))
+                                                                      .toList();
+
     if (message.isGroup()) {
       OutgoingGroupMediaMessage groupMessage     = (OutgoingGroupMediaMessage) message;
       GroupContext              groupContext     = groupMessage.getGroupContext();
@@ -193,7 +201,7 @@ public class PushGroupSendJob extends PushSendJob implements InjectableType {
                                                                            .asGroupMessage(group)
                                                                            .build();
 
-      messageSender.sendMessage(addresses, groupDataMessage);
+      messageSender.sendMessage(addresses, unidentifiedAccess, groupDataMessage);
     } else {
       SignalServiceGroup       group        = new SignalServiceGroup(GroupUtil.getDecodedId(groupId));
       SignalServiceDataMessage groupMessage = SignalServiceDataMessage.newBuilder()
@@ -208,7 +216,7 @@ public class PushGroupSendJob extends PushSendJob implements InjectableType {
                                                                       .withSharedContacts(sharedContacts)
                                                                       .build();
 
-      messageSender.sendMessage(addresses, groupMessage);
+      messageSender.sendMessage(addresses, unidentifiedAccess, groupMessage);
     }
   }
 

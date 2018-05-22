@@ -7,8 +7,6 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
-import org.thoughtcrime.securesms.logging.Log;
-
 import org.thoughtcrime.securesms.ApplicationContext;
 import org.thoughtcrime.securesms.R;
 import org.thoughtcrime.securesms.dependencies.InjectableType;
@@ -17,6 +15,7 @@ import org.thoughtcrime.securesms.jobmanager.requirements.NetworkRequirement;
 import org.thoughtcrime.securesms.jobmanager.requirements.NetworkRequirementProvider;
 import org.thoughtcrime.securesms.jobmanager.requirements.RequirementListener;
 import org.thoughtcrime.securesms.jobs.PushContentReceiveJob;
+import org.thoughtcrime.securesms.logging.Log;
 import org.thoughtcrime.securesms.notifications.NotificationChannels;
 import org.thoughtcrime.securesms.util.TextSecurePreferences;
 import org.whispersystems.libsignal.InvalidVersionException;
@@ -53,7 +52,8 @@ public class MessageRetrievalService extends Service implements InjectableType, 
   private List<Intent>           pushPending      = new LinkedList<>();
   private MessageRetrievalThread retrievalThread  = null;
 
-  public static SignalServiceMessagePipe pipe = null;
+  public static SignalServiceMessagePipe pipe             = null;
+  public static SignalServiceMessagePipe unidentifiedPipe = null;
 
   @Override
   public void onCreate() {
@@ -161,9 +161,10 @@ public class MessageRetrievalService extends Service implements InjectableType, 
     }
   }
 
-  private void shutdown(SignalServiceMessagePipe pipe) {
+  private void shutdown(SignalServiceMessagePipe pipe, SignalServiceMessagePipe unidentifiedPipe) {
     try {
       pipe.shutdown();
+      unidentifiedPipe.shutdown();
     } catch (Throwable t) {
       Log.w(TAG, t);
     }
@@ -185,6 +186,10 @@ public class MessageRetrievalService extends Service implements InjectableType, 
     return pipe;
   }
 
+  public static @Nullable SignalServiceMessagePipe getUnidentifiedPipe() {
+    return unidentifiedPipe;
+  }
+
   private class MessageRetrievalThread extends Thread implements Thread.UncaughtExceptionHandler {
 
     private AtomicBoolean stopThread = new AtomicBoolean(false);
@@ -201,9 +206,11 @@ public class MessageRetrievalService extends Service implements InjectableType, 
         waitForConnectionNecessary();
 
         Log.i(TAG, "Making websocket connection....");
-        pipe = receiver.createMessagePipe();
+        pipe             = receiver.createMessagePipe();
+        unidentifiedPipe = receiver.createUnidentifiedMessagePipe();
 
-        SignalServiceMessagePipe localPipe = pipe;
+        SignalServiceMessagePipe localPipe             = pipe;
+        SignalServiceMessagePipe unidentifiedLocalPipe = unidentifiedPipe;
 
         try {
           while (isConnectionNecessary() && !stopThread.get()) {
@@ -225,7 +232,7 @@ public class MessageRetrievalService extends Service implements InjectableType, 
           Log.w(TAG, e);
         } finally {
           Log.w(TAG, "Shutting down pipe...");
-          shutdown(localPipe);
+          shutdown(localPipe, unidentifiedLocalPipe);
         }
 
         Log.i(TAG, "Looping...");

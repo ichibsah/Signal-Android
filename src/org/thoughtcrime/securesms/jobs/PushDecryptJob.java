@@ -8,9 +8,6 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-
-import org.thoughtcrime.securesms.jobmanager.SafeData;
-import org.thoughtcrime.securesms.logging.Log;
 import android.util.Pair;
 
 import org.signal.libsignal.metadata.InvalidMetadataMessageException;
@@ -52,6 +49,7 @@ import org.thoughtcrime.securesms.database.model.MessageRecord;
 import org.thoughtcrime.securesms.database.model.MmsMessageRecord;
 import org.thoughtcrime.securesms.groups.GroupMessageProcessor;
 import org.thoughtcrime.securesms.jobmanager.JobParameters;
+import org.thoughtcrime.securesms.jobmanager.SafeData;
 import org.thoughtcrime.securesms.logging.Log;
 import org.thoughtcrime.securesms.mms.IncomingMediaMessage;
 import org.thoughtcrime.securesms.mms.MmsException;
@@ -659,7 +657,8 @@ public class PushDecryptJob extends ContextJob {
                                                                        message.getTimestamp(), -1,
                                                                        message.getMessage().getExpiresInSeconds() * 1000,
                                                                        ThreadDatabase.DistributionTypes.DEFAULT, quote.orNull(),
-                                                                       sharedContacts.or(Collections.emptyList()));
+                                                                       sharedContacts.or(Collections.emptyList()),
+                                                                       Collections.emptyList(), Collections.emptyList());
 
     mediaMessage = new OutgoingSecureMediaMessage(mediaMessage);
 

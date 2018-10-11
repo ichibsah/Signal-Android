@@ -23,6 +23,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -39,6 +40,7 @@ import org.thoughtcrime.securesms.mms.GlideRequests;
 import org.thoughtcrime.securesms.recipients.Recipient;
 import org.thoughtcrime.securesms.recipients.RecipientModifiedListener;
 import org.thoughtcrime.securesms.sms.MessageSender;
+import org.thoughtcrime.securesms.util.TextSecurePreferences;
 import org.thoughtcrime.securesms.util.Util;
 
 /**
@@ -60,6 +62,7 @@ public class MessageRecipientListItem extends RelativeLayout
   private Button                  conflictButton;
   private Button                  resendButton;
   private AvatarImageView         contactPhotoImage;
+  private ImageView               unidentifiedDeliveryIcon;
   private DeliveryStatusView      deliveryStatusView;
 
   public MessageRecipientListItem(Context context) {
@@ -73,13 +76,14 @@ public class MessageRecipientListItem extends RelativeLayout
   @Override
   protected void onFinishInflate() {
     super.onFinishInflate();
-    this.fromView           = findViewById(R.id.from);
-    this.errorDescription   = findViewById(R.id.error_description);
-    this.actionDescription  = findViewById(R.id.action_description);
-    this.contactPhotoImage  = findViewById(R.id.contact_photo_image);
-    this.conflictButton     = findViewById(R.id.conflict_button);
-    this.resendButton       = findViewById(R.id.resend_button);
-    this.deliveryStatusView = findViewById(R.id.delivery_status);
+    this.fromView                 = findViewById(R.id.from);
+    this.errorDescription         = findViewById(R.id.error_description);
+    this.actionDescription        = findViewById(R.id.action_description);
+    this.contactPhotoImage        = findViewById(R.id.contact_photo_image);
+    this.conflictButton           = findViewById(R.id.conflict_button);
+    this.resendButton             = findViewById(R.id.resend_button);
+    this.unidentifiedDeliveryIcon = findViewById(R.id.ud_indicator);
+    this.deliveryStatusView       = findViewById(R.id.delivery_status);
   }
 
   public void set(final GlideRequests glideRequests,
@@ -94,6 +98,7 @@ public class MessageRecipientListItem extends RelativeLayout
     fromView.setText(member.getRecipient());
     contactPhotoImage.setAvatar(glideRequests, member.getRecipient(), false);
     setIssueIndicators(record, isPushGroup);
+    unidentifiedDeliveryIcon.setVisibility(TextSecurePreferences.isShowUnididentifiedDeliveryIndicatorsEnabled(getContext()) && member.isUnidentified() ? VISIBLE : GONE);
   }
 
   private void setIssueIndicators(final MessageRecord record,

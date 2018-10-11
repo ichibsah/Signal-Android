@@ -362,7 +362,7 @@ public class MessageDetailsActivity extends PassphraseRequiredActionBarActivity 
       List<RecipientDeliveryStatus> recipients = new LinkedList<>();
 
       if (!messageRecord.getRecipient().isGroupRecipient()) {
-        recipients.add(new RecipientDeliveryStatus(messageRecord.getRecipient(), getStatusFor(messageRecord.getDeliveryReceiptCount(), messageRecord.getReadReceiptCount(), messageRecord.isPending()), -1));
+        recipients.add(new RecipientDeliveryStatus(messageRecord.getRecipient(), getStatusFor(messageRecord.getDeliveryReceiptCount(), messageRecord.getReadReceiptCount(), messageRecord.isPending()), messageRecord.isUnidentified(), -1));
       } else {
         List<GroupReceiptInfo> receiptInfoList = DatabaseFactory.getGroupReceiptDatabase(context).getGroupReceiptInfo(messageRecord.getId());
 
@@ -370,12 +370,13 @@ public class MessageDetailsActivity extends PassphraseRequiredActionBarActivity 
           List<Recipient> group = DatabaseFactory.getGroupDatabase(context).getGroupMembers(messageRecord.getRecipient().getAddress().toGroupString(), false);
 
           for (Recipient recipient : group) {
-            recipients.add(new RecipientDeliveryStatus(recipient, RecipientDeliveryStatus.Status.UNKNOWN, -1));
+            recipients.add(new RecipientDeliveryStatus(recipient, RecipientDeliveryStatus.Status.UNKNOWN, false, -1));
           }
         } else {
           for (GroupReceiptInfo info : receiptInfoList) {
             recipients.add(new RecipientDeliveryStatus(Recipient.from(context, info.getAddress(), true),
                                                        getStatusFor(info.getStatus(), messageRecord.isPending()),
+                                                       info.isUnidentified(),
                                                        info.getTimestamp()));
           }
         }

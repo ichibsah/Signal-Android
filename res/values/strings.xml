@@ -1204,6 +1204,11 @@
     <string name="preferences_chats__message_text_size">Message font size</string>
     <string name="preferences_events__contact_joined_signal">Contact joined Signal</string>
     <string name="preferences_notifications__priority">Priority</string>
+    <string name="preferences_communication__category_unidentified_delivery">Unidentified Delivery</string>
+    <string name="preferences_communication__unidentified_delivery_indicators">Unidentified delivery indicators</string>
+    <string name="preferences_communication__unidentified_delivery_indicators_description">Show an indicator in message details to indicate whether a message was sent or received using unidentified delivery.</string>
+    <string name="preferences_communication__unsolicited_unidentified_delivery">Unsolicited unidentified delivery</string>
+    <string name="preferences_communication__unsolicited_unidentified_delivery_description">You probably don\'t want to enable this unless you\'re a newspaper.</string>
 
     <!-- **************************************** -->
     <!-- menus -->

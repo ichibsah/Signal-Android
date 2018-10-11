@@ -94,6 +94,14 @@
                 android:visibility="gone"
                 tools:visibility="gone" />
 
+        <ImageView android:id="@+id/ud_indicator"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginRight="4dp"
+                   android:layout_marginEnd="4dp"
+                   android:src="@drawable/ic_unidentified_delivery"
+                   android:tint="?attr/conversation_item_sent_text_secondary_color"/>
+
         <org.thoughtcrime.securesms.components.DeliveryStatusView
                 android:id="@+id/delivery_status"
                 android:layout_width="wrap_content"

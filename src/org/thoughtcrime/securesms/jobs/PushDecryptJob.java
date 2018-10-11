@@ -380,7 +380,8 @@ public class PushDecryptJob extends ContextJob {
     IncomingTextMessage incomingTextMessage = new IncomingTextMessage(Address.fromExternal(context, content.getSender()),
                                                                       content.getSenderDevice(),
                                                                       content.getTimestamp(),
-                                                                      "", Optional.absent(), 0);
+                                                                      "", Optional.absent(), 0,
+                                                                      content.isNeedsReceipt());
 
     Long threadId;
 
@@ -463,7 +464,7 @@ public class PushDecryptJob extends ContextJob {
       IncomingMediaMessage mediaMessage = new IncomingMediaMessage(Address.fromExternal(context, content.getSender()),
                                                                    message.getTimestamp(), -1,
                                                                    message.getExpiresInSeconds() * 1000L, true,
-                                                                   Optional.absent(),
+                                                                   content.isNeedsReceipt(),
                                                                    Optional.absent(),
                                                                    message.getGroupInfo(),
                                                                    Optional.absent(),
@@ -598,7 +599,7 @@ public class PushDecryptJob extends ContextJob {
       IncomingMediaMessage    mediaMessage   = new IncomingMediaMessage(Address.fromExternal(context, content.getSender()),
                                                                         message.getTimestamp(), -1,
                                                                         message.getExpiresInSeconds() * 1000L, false,
-                                                                        Optional.absent(),
+                                                                        content.isNeedsReceipt(),
                                                                         message.getBody(),
                                                                         message.getGroupInfo(),
                                                                         message.getAttachments(),
@@ -711,7 +712,8 @@ public class PushDecryptJob extends ContextJob {
                                                                 content.getSenderDevice(),
                                                                 message.getTimestamp(), body,
                                                                 message.getGroupInfo(),
-                                                                message.getExpiresInSeconds() * 1000L);
+                                                                message.getExpiresInSeconds() * 1000L,
+                                                                content.isNeedsReceipt());
 
       textMessage = new IncomingEncryptedMessage(textMessage, body);
       Optional<InsertResult> insertResult = database.insertMessageInbox(textMessage);
@@ -952,7 +954,7 @@ public class PushDecryptJob extends ContextJob {
     SmsDatabase         database    = DatabaseFactory.getSmsDatabase(context);
     IncomingTextMessage textMessage = new IncomingTextMessage(Address.fromExternal(context, sender),
                                                               senderDevice, timestamp, "",
-                                                              Optional.absent(), 0);
+                                                              Optional.absent(), 0, false);
 
     textMessage = new IncomingEncryptedMessage(textMessage, "");
     return database.insertMessageInbox(textMessage);

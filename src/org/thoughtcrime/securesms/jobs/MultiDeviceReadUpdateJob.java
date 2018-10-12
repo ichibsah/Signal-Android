@@ -91,7 +91,7 @@ public class MultiDeviceReadUpdateJob extends MasterSecretJob implements Injecta
   @Override
   public void onRun(MasterSecret masterSecret) throws IOException, UntrustedIdentityException {
     if (!TextSecurePreferences.isMultiDevice(context)) {
-      Log.w(TAG, "Not multi device...");
+      Log.i(TAG, "Not multi device...");
       return;
     }
 

@@ -273,7 +273,15 @@ public class PushDecryptJob extends ContextJob {
     } catch (ProtocolInvalidVersionException e) {
       Log.w(TAG, e);
       handleInvalidVersionMessage(e.getSender(), e.getSenderDevice(), envelope.getTimestamp(), smsMessageId);
-    } catch (ProtocolInvalidMessageException | ProtocolInvalidKeyIdException | ProtocolInvalidKeyException | ProtocolUntrustedIdentityException e) {
+    } catch (ProtocolInvalidMessageException  e) {
+      if (e.getSenderDevice() == 1) {
+        Log.i(TAG, "Dropping UD message from self.");
+      } else {
+        Log.w(TAG, e);
+        handleCorruptMessage(e.getSender(), e.getSenderDevice(), envelope.getTimestamp(), smsMessageId);
+      }
+    }
+    catch (ProtocolInvalidKeyIdException | ProtocolInvalidKeyException | ProtocolUntrustedIdentityException e) {
       Log.w(TAG, e);
       handleCorruptMessage(e.getSender(), e.getSenderDevice(), envelope.getTimestamp(), smsMessageId);
     } catch (StorageFailedException e) {

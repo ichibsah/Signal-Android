@@ -9,6 +9,7 @@ import org.thoughtcrime.securesms.dependencies.InjectableType;
 import org.thoughtcrime.securesms.jobmanager.JobParameters;
 import org.thoughtcrime.securesms.jobmanager.SafeData;
 import org.thoughtcrime.securesms.logging.Log;
+import org.thoughtcrime.securesms.util.TextSecurePreferences;
 import org.whispersystems.libsignal.util.guava.Optional;
 import org.whispersystems.signalservice.api.SignalServiceMessageSender;
 import org.whispersystems.signalservice.api.crypto.UntrustedIdentityException;
@@ -59,6 +60,11 @@ public class MultiDeviceReadReceiptUpdateJob extends ContextJob implements Injec
 
   @Override
   public void onRun() throws IOException, UntrustedIdentityException {
+//    if (!TextSecurePreferences.isMultiDevice(context)) {
+//      Log.i(TAG, "Not multi device, aborting...");
+//      return;
+//    }
+
     messageSender.sendMessage(SignalServiceSyncMessage.forConfiguration(new ConfigurationMessage(Optional.of(enabled))),
                               UnidentifiedAccessUtil.getAccessForSync(context));
   }

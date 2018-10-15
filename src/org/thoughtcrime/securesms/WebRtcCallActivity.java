@@ -44,7 +44,6 @@ import org.thoughtcrime.securesms.events.WebRtcViewModel;
 import org.thoughtcrime.securesms.permissions.Permissions;
 import org.thoughtcrime.securesms.push.SignalServiceNetworkAccess;
 import org.thoughtcrime.securesms.recipients.Recipient;
-import org.thoughtcrime.securesms.service.MessageRetrievalService;
 import org.thoughtcrime.securesms.service.WebRtcCallService;
 import org.thoughtcrime.securesms.util.ServiceUtil;
 import org.thoughtcrime.securesms.util.TextSecurePreferences;
@@ -88,7 +87,6 @@ public class WebRtcCallActivity extends Activity {
   public void onResume() {
     Log.i(TAG, "onResume()");
     super.onResume();
-    if (!networkAccess.isCensored(this)) MessageRetrievalService.registerActivityStarted(this);
     initializeScreenshotSecurity();
     EventBus.getDefault().register(this);
   }
@@ -109,7 +107,6 @@ public class WebRtcCallActivity extends Activity {
   public void onPause() {
     Log.i(TAG, "onPause");
     super.onPause();
-    if (!networkAccess.isCensored(this)) MessageRetrievalService.registerActivityStopped(this);
     EventBus.getDefault().unregister(this);
   }
 

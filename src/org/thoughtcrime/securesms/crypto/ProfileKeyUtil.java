@@ -21,8 +21,7 @@ public class ProfileKeyUtil {
       String encodedProfileKey = TextSecurePreferences.getProfileKey(context);
 
       if (encodedProfileKey == null) {
-        encodedProfileKey = Util.getSecret(32);
-        TextSecurePreferences.setProfileKey(context, encodedProfileKey);
+        encodedProfileKey = generateAndStoreProfileKey(context);
       }
 
       return Base64.decode(encodedProfileKey);
@@ -31,4 +30,14 @@ public class ProfileKeyUtil {
     }
   }
 
+  public static synchronized @NonNull byte[] rotateProfileKey(@NonNull Context context) {
+    generateAndStoreProfileKey(context);
+    return getProfileKey(context);
+  }
+
+  private static synchronized String generateAndStoreProfileKey(@NonNull Context context) {
+    String encodedKey = Util.getSecret(32);
+    TextSecurePreferences.setProfileKey(context, encodedKey);
+    return encodedKey;
+  }
 }

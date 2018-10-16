@@ -169,7 +169,6 @@ public class RetrieveProfileJob extends ContextJob implements InjectableType {
     RecipientDatabase recipientDatabase = DatabaseFactory.getRecipientDatabase(context);
     byte[]            profileKey        = recipient.getProfileKey();
 
-    // XXX Update UI
     if (unrestrictedUnidentifiedAccess) {
       recipientDatabase.setUnidentifiedAccessMode(recipient, UnidentifiedAccessMode.UNRESTRICTED);
     } else if (profileKey == null || unidentifiedAccessVerifier == null) {

@@ -51,7 +51,7 @@ public class UnidentifiedAccessUtil {
 
       Log.w(TAG, "Their access key: " + (theirUnidentifiedAccessKey == null));
       Log.w(TAG, "Our access key: " + (ourUnidentifiedAccessKey == null));
-      Log.w(TAG, "Our certificatE: " + (ourUnidentifiedAccessCertificate == null));
+      Log.w(TAG, "Our certificate: " + (ourUnidentifiedAccessCertificate == null));
 
       if (theirUnidentifiedAccessKey != null &&
           ourUnidentifiedAccessKey != null   &&

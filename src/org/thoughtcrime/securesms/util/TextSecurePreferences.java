@@ -168,7 +168,7 @@ public class TextSecurePreferences {
   private static final String UNIDENTIFIED_ACCESS_CERTIFICATE_ROTATION_TIME_PREF = "pref_unidentified_access_certificate_rotation_time";
   private static final String UNIDENTIFIED_ACCESS_CERTIFICATE                    = "pref_unidentified_access_certificate";
   public  static final String UNIVERSAL_UNIDENTIFIED_ACCESS                      = "pref_universal_unidentified_access";
-  private static final String SHOW_UNIDENTIFIED_DELIVERY_INDICATORS              = "pref_show_unidentifed_delivery_indicators";
+  public  static final String SHOW_UNIDENTIFIED_DELIVERY_INDICATORS              = "pref_show_unidentifed_delivery_indicators";
 
   public static boolean isScreenLockEnabled(@NonNull Context context) {
     return getBooleanPreference(context, SCREEN_LOCK, false);
@@ -541,7 +541,7 @@ public class TextSecurePreferences {
     return getBooleanPreference(context, UNIVERSAL_UNIDENTIFIED_ACCESS, false);
   }
 
-  public static boolean isShowUnididentifiedDeliveryIndicatorsEnabled(Context context) {
+  public static boolean isShowUnidentifiedDeliveryIndicatorsEnabled(Context context) {
     return getBooleanPreference(context, SHOW_UNIDENTIFIED_DELIVERY_INDICATORS, false);
   }
 

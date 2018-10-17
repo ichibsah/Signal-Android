@@ -3,6 +3,7 @@ package org.thoughtcrime.securesms.dependencies;
 import android.content.Context;
 
 import org.thoughtcrime.securesms.gcm.GcmBroadcastReceiver;
+import org.thoughtcrime.securesms.jobs.MultiDeviceConfigurationUpdateJob;
 import org.thoughtcrime.securesms.jobs.RotateProfileKeyJob;
 import org.thoughtcrime.securesms.logging.Log;
 
@@ -89,7 +90,8 @@ import dagger.Provides;
                                      GcmBroadcastReceiver.class,
                                      RotateCertificateJob.class,
                                      SendDeliveryReceiptJob.class,
-                                     RotateProfileKeyJob.class})
+                                     RotateProfileKeyJob.class,
+                                     MultiDeviceConfigurationUpdateJob.class})
 public class SignalCommunicationModule {
 
   private static final String TAG = SignalCommunicationModule.class.getSimpleName();

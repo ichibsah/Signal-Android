@@ -567,7 +567,9 @@ public class PushDecryptJob extends ContextJob {
     if (message.isConfigurationRequest()) {
       ApplicationContext.getInstance(context)
                         .getJobManager()
-                        .add(new MultiDeviceReadReceiptUpdateJob(getContext(), TextSecurePreferences.isReadReceiptsEnabled(getContext())));
+                        .add(new MultiDeviceConfigurationUpdateJob(getContext(),
+                                                                   TextSecurePreferences.isReadReceiptsEnabled(getContext()),
+                                                                   TextSecurePreferences.isShowUnidentifiedDeliveryIndicatorsEnabled(getContext())));
     }
   }
 

@@ -98,7 +98,7 @@ public class MessageRecipientListItem extends RelativeLayout
     fromView.setText(member.getRecipient());
     contactPhotoImage.setAvatar(glideRequests, member.getRecipient(), false);
     setIssueIndicators(record, isPushGroup);
-    unidentifiedDeliveryIcon.setVisibility(TextSecurePreferences.isShowUnididentifiedDeliveryIndicatorsEnabled(getContext()) && member.isUnidentified() ? VISIBLE : GONE);
+    unidentifiedDeliveryIcon.setVisibility(TextSecurePreferences.isShowUnidentifiedDeliveryIndicatorsEnabled(getContext()) && member.isUnidentified() ? VISIBLE : GONE);
   }
 
   private void setIssueIndicators(final MessageRecord record,
